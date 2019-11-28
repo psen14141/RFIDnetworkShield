@@ -1,0 +1,10 @@
+E:\EDUCATION\training\QUANTINE\PROJECTS\ETHERNET-TESTING\SocketProject\SocketProject\bin\Debug\SocketProject.exe.config
+E:\EDUCATION\training\QUANTINE\PROJECTS\ETHERNET-TESTING\SocketProject\SocketProject\bin\Debug\SocketProject.exe
+E:\EDUCATION\training\QUANTINE\PROJECTS\ETHERNET-TESTING\SocketProject\SocketProject\bin\Debug\SocketProject.pdb
+E:\EDUCATION\training\QUANTINE\PROJECTS\ETHERNET-TESTING\SocketProject\SocketProject\obj\Debug\SocketProject.csprojAssemblyReference.cache
+E:\EDUCATION\training\QUANTINE\PROJECTS\ETHERNET-TESTING\SocketProject\SocketProject\obj\Debug\SocketProject.Form1.resources
+E:\EDUCATION\training\QUANTINE\PROJECTS\ETHERNET-TESTING\SocketProject\SocketProject\obj\Debug\SocketProject.Properties.Resources.resources
+E:\EDUCATION\training\QUANTINE\PROJECTS\ETHERNET-TESTING\SocketProject\SocketProject\obj\Debug\SocketProject.csproj.GenerateResource.cache
+E:\EDUCATION\training\QUANTINE\PROJECTS\ETHERNET-TESTING\SocketProject\SocketProject\obj\Debug\SocketProject.csproj.CoreCompileInputs.cache
+E:\EDUCATION\training\QUANTINE\PROJECTS\ETHERNET-TESTING\SocketProject\SocketProject\obj\Debug\SocketProject.exe
+E:\EDUCATION\training\QUANTINE\PROJECTS\ETHERNET-TESTING\SocketProject\SocketProject\obj\Debug\SocketProject.pdb

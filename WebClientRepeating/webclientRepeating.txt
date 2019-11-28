@@ -1,0 +1,233 @@
+/*
+ * 8 RST (black)
+ * 9 SDA  (Green)
+ * 11 MOSI (Orange)
+ * 12 MISO (purple)
+ * 13 SCK (yellow)
+
+*/
+
+
+
+
+
+#include <SPI.h>
+#include <Ethernet.h>
+#include <MFRC522.h>
+
+#define SS_PIN 9
+#define RST_PIN 8
+MFRC522 mfrc522(SS_PIN, RST_PIN); 
+
+byte mac[] = {
+  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED
+};
+IPAddress ip(192, 168, 1, 11); // if there the router is not assigned a ip address to the host this will be the ip address of the ethernet shield
+IPAddress myDns(192, 168, 1, 1); //ip address of the router
+EthernetClient client;
+IPAddress server(192,168,1,10); // ip address of the pc
+unsigned long lastConnectionTime = 0;           
+const unsigned long postingInterval = 10*1000; 
+void setup() {
+  pinMode(5,OUTPUT);
+  pinMode(6,OUTPUT);
+  pinMode(7,OUTPUT);
+  Serial.begin(9600);SPI.begin();mfrc522.PCD_Init();Serial.println("Enter the card.");Serial.println();
+
+  while (!Serial) {;}
+  
+  Serial.println("Initialize Ethernet with DHCP:");
+  
+  if (Ethernet.begin(mac) == 0)
+  {
+    Serial.println("Failed to configure Ethernet using DHCP");
+    if (Ethernet.hardwareStatus() == EthernetNoHardware)
+    {
+      Serial.println("Ethernet shield was not found.  Sorry, can't run without hardware. :(");
+      while (true)
+      {
+        delay(1);
+        }
+     }
+     if (Ethernet.linkStatus() == LinkOFF)
+     {
+       Serial.println("Ethernet cable is not connected.");
+     }
+    Ethernet.begin(mac, ip);// , myDns);
+    Serial.print("My IP address: ");
+    Serial.println(Ethernet.localIP());
+  }
+  else
+  {
+    Serial.print("  DHCP assigned IP ");
+    Serial.println(Ethernet.localIP());
+  }
+  delay(1000);
+
+}
+
+void loop()
+{
+  if(mfrc522.PICC_IsNewCardPresent()) 
+  {    
+    if (! mfrc522.PICC_ReadCardSerial())
+    {
+      Serial.println("PICC_ReadCardSerial Failed");
+      return;
+    }
+    String content= "";
+    byte letter;
+    for (byte i = 0; i < mfrc522.uid.size; i++)
+    {
+      content.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
+      content.concat(String(mfrc522.uid.uidByte[i], HEX));
+    }
+    content.toUpperCase();
+    Serial.println("Card Found>> "+content);    
+    
+    if (client.connected())
+    {       
+      lastConnectionTime = millis();
+      client.println("Card["+content+"]");
+      Serial.println("Sent to Server >> Card["+content+"]"); 
+    }    
+    else
+    {
+      Serial.println("Server not Connected ......."); 
+    }
+  }
+  
+ String content= "";
+ bool dataFromServer=false;
+ 
+  while (client.available())
+  {
+    dataFromServer=true;
+    char c = client.read();
+    content.concat(c);    
+    lastConnectionTime = millis();
+  }
+  if(dataFromServer)
+  {
+    Serial.println("Read From Server>> "+content);
+  }
+
+  if(content=="RedOn")
+  {
+    Serial.println("red Light On");
+    digitalWrite(5,HIGH);
+    delay(1000);
+
+  }
+  if(content=="RedOff")
+  {
+    Serial.println("red Light Off");
+    digitalWrite(5,LOW);
+    delay(1000);
+  }
+  if(content=="GreenOn")
+  {
+    Serial.println("Green Light On");
+    digitalWrite(6,HIGH);
+    delay(1000);
+  }
+  if(content=="GreenOff")
+  {
+    Serial.println("Green Light off");
+    digitalWrite(6,LOW);
+    delay(1000);
+  }
+  if(content=="BuzerGood")
+  {
+    Serial.println("Buzzer On");
+    digitalWrite(7,HIGH);
+    delay(50);
+    digitalWrite(7,LOW);
+    delay(50);
+    digitalWrite(7,HIGH);
+    delay(50);
+    digitalWrite(7,LOW);
+    delay(50);
+    digitalWrite(7,HIGH);
+    delay(50);
+    digitalWrite(7,LOW);
+    delay(50);
+    digitalWrite(7,HIGH);
+    delay(50);
+    digitalWrite(7,LOW);
+    delay(300);
+    digitalWrite(7,HIGH);
+    delay(50);
+    digitalWrite(7,LOW);
+    delay(50);
+    digitalWrite(7,HIGH);
+    delay(50);
+    digitalWrite(7,LOW);
+    delay(50);
+    digitalWrite(7,HIGH);
+    delay(50);
+    digitalWrite(7,LOW);
+    delay(50);
+    digitalWrite(7,HIGH);
+    delay(50);
+    digitalWrite(7,LOW);
+    delay(50);
+    
+    
+  }
+  if(content=="BuzerWarning")
+  {
+
+    digitalWrite(7,HIGH);
+    delay(200);
+    digitalWrite(7,LOW);
+    delay(50);
+    digitalWrite(7,HIGH);
+    delay(200);
+    digitalWrite(7,LOW);
+    delay(50);
+    digitalWrite(7,HIGH);
+    delay(200);
+    digitalWrite(7,LOW);
+    delay(50);
+    digitalWrite(7,HIGH);
+    delay(200);
+    digitalWrite(7,LOW);
+    delay(50);
+  }
+  if(content=="OffAll")
+  {
+    
+    digitalWrite(5,LOW);
+    digitalWrite(6,LOW);
+  }
+
+
+  
+  if (millis() - lastConnectionTime > postingInterval)
+  {
+    httpRequest();
+  }  
+}
+
+
+
+
+  
+  
+
+    
+void httpRequest()
+{
+  client.stop();
+  if (client.connect(server, 2020))
+  {
+    Serial.println("connecting to Server...");
+    client.println();
+    lastConnectionTime = millis();
+  }
+  else
+  {
+    Serial.println("Server connection failed");
+  }
+}
